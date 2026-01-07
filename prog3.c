@@ -1,0 +1,134 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+
+int abs_diff(int a, int b) {
+    return abs(a - b);
+}
+
+/* FCFS Disk Scheduling */
+void fcfs(int req[], int n, int head) {
+    int total = 0, current = head;
+
+    for (int i = 0; i < n; i++) {
+        total += abs_diff(current, req[i]);
+        current = req[i];
+    }
+    printf("\nFCFS Total Head Movement = %d\n", total);
+}
+
+/* SSTF Disk Scheduling */
+void sstf(int req[], int n, int head) {
+    int visited[50] = {0};
+    int total = 0, current = head;
+
+    for (int i = 0; i < n; i++) {
+        int min = 9999, index = -1;
+
+        for (int j = 0; j < n; j++) {
+            if (!visited[j] && abs_diff(current, req[j]) < min) {
+                min = abs_diff(current, req[j]);
+                index = j;
+            }
+        }
+        visited[index] = 1;
+        total += abs_diff(current, req[index]);
+        current = req[index];
+    }
+    printf("SSTF Total Head Movement = %d\n", total);
+}
+
+/* SCAN Disk Scheduling */
+void scan(int req[], int n, int head, int size) {
+    int total = 0, arr[50], index = 0;
+
+    for (int i = 0; i < n; i++)
+        arr[i] = req[i];
+
+    arr[n] = head;
+    n++;
+
+    // Sort
+    for (int i = 0; i < n - 1; i++)
+        for (int j = 0; j < n - i - 1; j++)
+            if (arr[j] > arr[j + 1]) {
+                int temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+            }
+
+    for (int i = 0; i < n; i++)
+        if (arr[i] == head)
+            index = i;
+
+    // Move right
+    for (int i = index; i < n - 1; i++)
+        total += abs_diff(arr[i], arr[i + 1]);
+
+    // Move to disk end
+    total += abs_diff(arr[n - 1], size - 1);
+
+    // Move left
+    for (int i = index - 1; i >= 0; i--)
+        total += abs_diff(arr[i + 1], arr[i]);
+
+    printf("SCAN Total Head Movement = %d\n", total);
+}
+
+/* LOOK Disk Scheduling */
+void look(int req[], int n, int head) {
+    int total = 0, arr[50], index = 0;
+
+    for (int i = 0; i < n; i++)
+        arr[i] = req[i];
+
+    arr[n] = head;
+    n++;
+
+    // Sort
+    for (int i = 0; i < n - 1; i++)
+        for (int j = 0; j < n - i - 1; j++)
+            if (arr[j] > arr[j + 1]) {
+                int temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+            }
+
+    for (int i = 0; i < n; i++)
+        if (arr[i] == head)
+            index = i;
+
+    // Move right till last request
+    for (int i = index; i < n - 1; i++)
+        total += abs_diff(arr[i], arr[i + 1]);
+
+    // Move left
+    for (int i = index - 1; i >= 0; i--)
+        total += abs_diff(arr[i + 1], arr[i]);
+
+    printf("LOOK Total Head Movement = %d\n", total);
+}
+
+int main() {
+    int req[50], n, head, size;
+
+    printf("Enter number of disk requests: ");
+    scanf("%d", &n);
+
+    printf("Enter disk requests:\n");
+    for (int i = 0; i < n; i++)
+        scanf("%d", &req[i]);
+
+    printf("Enter initial head position: ");
+    scanf("%d", &head);
+
+    printf("Enter disk size: ");
+    scanf("%d", &size);
+
+    fcfs(req, n, head);
+    sstf(req, n, head);
+    scan(req, n, head, size);
+    look(req, n, head);
+
+    return 0;
+}
