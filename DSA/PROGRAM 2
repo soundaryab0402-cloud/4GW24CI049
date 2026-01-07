@@ -1,0 +1,90 @@
+#include <stdio.h>
+#include <string.h>
+
+void readstring(char str[], size_t maxlen, const char *label);
+int stringlength(char str[]);
+int ismatch(char str[], char pat[], int pos);
+void replacePattern(char str[], char pat[], char rep[], char result[]);
+
+int main()
+{
+    char STR[100], PAT[50], REP[50], RESULT[200];
+
+    readstring(STR, sizeof(STR), "Main string (STR)");
+    readstring(PAT, sizeof(PAT), "Pattern string (PAT)");
+    readstring(REP, sizeof(REP), "Replace string (REP)");
+
+    replacePattern(STR, PAT, REP, RESULT);
+
+    return 0;
+}
+
+void readstring(char str[], size_t maxlen, const char *label)
+{
+    int c;
+    printf("Enter %s: ", label);
+
+    if (fgets(str, (int)maxlen, stdin) == NULL)
+    {
+        str[0] = '\0';
+        return;
+    }
+
+    size_t len = strlen(str);
+    if (len > 0 && str[len - 1] == '\n')
+        str[len - 1] = '\0';
+    else
+        while ((c = getchar()) != '\n' && c != EOF);
+}
+
+int stringlength(char str[])
+{
+    int len = 0;
+    while (str[len] != '\0')
+        len++;
+    return len;
+}
+
+int ismatch(char str[], char pat[], int pos)
+{
+    int i = 0;
+    while (pat[i] != '\0')
+    {
+        if (str[pos + i] != pat[i])
+            return 0;
+        i++;
+    }
+    return 1;
+}
+
+void replacePattern(char str[], char pat[], char rep[], char result[])
+{
+    int i = 0, j = 0;
+    int found = 0;
+
+    int lenSTR = stringlength(str);
+    int lenPAT = stringlength(pat);
+    int lenREP = stringlength(rep);
+
+    while (i < lenSTR)
+    {
+        if (ismatch(str, pat, i))
+        {
+            found = 1;
+            for (int k = 0; k < lenREP; k++)
+                result[j++] = rep[k];
+            i += lenPAT;
+        }
+        else
+        {
+            result[j++] = str[i++];
+        }
+    }
+
+    result[j] = '\0';
+
+    if (found)
+        printf("\nUpdated string: %s\n", result);
+    else
+        printf("\nPattern not found in the main string\n");
+}
