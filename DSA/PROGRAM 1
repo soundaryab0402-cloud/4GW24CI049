@@ -1,0 +1,54 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+struct Day {
+    char *day;
+    int date;
+    char *activity;
+};
+
+void create(struct Day *calendar, int size) {
+    char *days[] = {"Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"};
+    for (int i = 0; i < size; i++) {
+        calendar[i].day = (char *)malloc(strlen(days[i]) * 20);
+        strcpy(calendar[i].day, days[i]);
+        calendar[i].date = i + 1;
+        calendar[i].activity = (char *)malloc(100);
+        printf("Enter the activity for the day %s: ", calendar[i].day);
+        scanf(" %[^\n]", calendar[i].activity);
+    }
+}
+
+void display(struct Day *calendar, int size) {
+    printf("\nWeekly Activity Calendar:\n");
+    for (int i = 0; i < size; i++) {
+        printf("Day %d: %s\n", calendar[i].date, calendar[i].day);
+        printf("Activity: %s\n", calendar[i].activity);
+    }
+}
+
+void freememory(struct Day *calendar, int size) {
+    for (int i = 0; i < size; i++) {
+        free(calendar[i].day);
+        free(calendar[i].activity);
+    }
+}
+
+int main() {
+    int size;
+    printf("Enter the number of days in a week: ");
+    scanf("%d", &size);
+
+    struct Day *calendar = (struct Day *)malloc(size * sizeof(struct Day));
+
+    if (calendar == NULL) {
+        return 0;
+    }
+
+    create(calendar, size);
+    display(calendar, size);
+    freememory(calendar, size);
+
+    return 0;
+}
