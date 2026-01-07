@@ -1,0 +1,120 @@
+import java.util.Scanner;
+
+class Employee {
+    int id;
+    String name;
+    String dept;
+    float salary;
+}
+
+public class EmployeeManagementSystem {
+
+    static Employee[] emp = new Employee[100];
+    static int count = 0;
+    static Scanner sc = new Scanner(System.in);
+
+    // Add Employee
+    static void addEmployee() {
+        emp[count] = new Employee();
+
+        System.out.print("Enter ID: ");
+        emp[count].id = sc.nextInt();
+
+        System.out.print("Enter Name: ");
+        emp[count].name = sc.next();
+
+        System.out.print("Enter Department: ");
+        emp[count].dept = sc.next();
+
+        System.out.print("Enter Salary: ");
+        emp[count].salary = sc.nextFloat();
+
+        count++;
+        System.out.println("Employee added successfully!");
+    }
+
+    // Display Employees
+    static void displayEmployees() {
+        if (count == 0) {
+            System.out.println("No employees to display.");
+            return;
+        }
+
+        for (int i = 0; i < count; i++) {
+            System.out.println("\nID: " + emp[i].id);
+            System.out.println("Name: " + emp[i].name);
+            System.out.println("Department: " + emp[i].dept);
+            System.out.println("Salary: " + emp[i].salary);
+        }
+    }
+
+    // Search Employee
+    static void searchEmployee() {
+        System.out.print("Enter ID to search: ");
+        int id = sc.nextInt();
+        boolean found = false;
+
+        for (int i = 0; i < count; i++) {
+            if (emp[i].id == id) {
+                System.out.println("Employee Found: " + emp[i].name);
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) {
+            System.out.println("Employee not found!");
+        }
+    }
+
+    // Delete Employee
+    static void deleteEmployee() {
+        System.out.print("Enter ID to delete: ");
+        int id = sc.nextInt();
+
+        for (int i = 0; i < count; i++) {
+            if (emp[i].id == id) {
+                emp[i] = emp[count - 1]; // Replace with last employee
+                count--;
+                System.out.println("Employee deleted successfully!");
+                return;
+            }
+        }
+        System.out.println("Employee not found!");
+    }
+
+    // Main Method
+    public static void main(String[] args) {
+        int choice;
+
+        do {
+            System.out.println("\n1. Add Employee");
+            System.out.println("2. Display Employees");
+            System.out.println("3. Search Employee");
+            System.out.println("4. Delete Employee");
+            System.out.println("5. Exit");
+            System.out.print("Enter choice: ");
+            choice = sc.nextInt();
+
+            switch (choice) {
+                case 1:
+                    addEmployee();
+                    break;
+                case 2:
+                    displayEmployees();
+                    break;
+                case 3:
+                    searchEmployee();
+                    break;
+                case 4:
+                    deleteEmployee();
+                    break;
+                case 5:
+                    System.out.println("Exiting...");
+                    break;
+                default:
+                    System.out.println("Invalid choice!");
+            }
+        } while (choice != 5);
+    }
+}
